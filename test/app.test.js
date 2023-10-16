@@ -74,7 +74,7 @@ describe("App", () => {
       });
 
       it("returns 400 if title is empty", async () => {
-        const response = (await request(app).post("/todos")).setEncoding({ data: { title: "" } });
+        const response = await request(app).post("/todos").send({ data: { title: "" } });
 
         expect(response.status).toBe(400);
       });
