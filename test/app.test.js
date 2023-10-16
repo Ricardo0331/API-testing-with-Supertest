@@ -13,14 +13,18 @@ describe("App", () => {
   });
   
   it("returns error message for a route that is not defined", async () => {
-    // Write your solution here
-    expect(1).toEqual(2);
+    const response = await request(app).get("/undefined-route");
+
+    expect(response.status).toBe(404);
+    expect(response.text).toContain("Not found");
   });
 
   describe("path /todos/:todoId", () => {
     it("returns error message for non-existent todo", async () => {
-      // Write your solution here
-      expect(1).toEqual(2);
+      const response = await request(app).get("/todos/9999");
+
+      expect(response.status).toBe(404);
+      expect(response.text).toContain("Todo id not found");
     });
   });
 
@@ -51,18 +55,28 @@ describe("App", () => {
     
     describe("POST method", () => {
       it("creates a new todo and assigns an id", async () => {
-        // Write your solution here
-        expect(1).toEqual(2);
+        const newTodo = {
+          title: "Learn SuperTest",
+          completed: false
+        };
+
+        const response = await request(app).post("/todos").send({ data: newTodo});
+
+        expect(response.status).toBe(201);
+        expect(response.body.data).toEqual(expect.objectContaining(newTodo));
+        expect(response.body.data.id).toBeDefined();
       });
 
       it("returns 400 if title is missing", async () => {
-        // Write your solution here
-        expect(1).toEqual(2);
+        const response = await request(app).post("/todos").send({ data: {} });
+
+        expect(response.status).toBe(400);
       });
 
       it("returns 400 if title is empty", async () => {
-        // Write your solution here
-        expect(1).toEqual(2);
+        const response = (await request(app).post("/todos")).setEncoding({ data: { title: "" } });
+
+        expect(response.status).toBe(400);
       });
     });
     
